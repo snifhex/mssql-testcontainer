@@ -3,8 +3,16 @@ import signal
 import pyodbc
 import docker
 
+
 class SQLServerContainer:
-    def __init__(self, image='mcr.microsoft.com/mssql/server:2019-latest', port=1433, sa_password='YourPass@1', database='temp_db', username='SA'):
+    def __init__(
+        self,
+        image="mcr.microsoft.com/mssql/server:2019-latest",
+        port=1433,
+        sa_password="YourPass@1",
+        database="temp_db",
+        username="SA",
+    ):
         self.image = image
         self.port = port
         self.sa_password = sa_password
@@ -24,26 +32,25 @@ class SQLServerContainer:
         if self.container is not None:
             try:
                 self._cleanup()
-            except:  
+            except:
                 pass
 
     def _create_container(self):
         client = docker.from_env()
 
         container_config = {
-            'image': self.image,
-            'ports': {f'{self.port}/tcp': self.port},
-            'environment': {
-                'ACCEPT_EULA': 'Y',
-                'SA_PASSWORD': self.sa_password
-            },
-            'detach': True,
+            "image": self.image,
+            "ports": {f"{self.port}/tcp": self.port},
+            "environment": {"ACCEPT_EULA": "Y", "SA_PASSWORD": self.sa_password},
+            "detach": True,
         }
 
         self.container = client.containers.create(**container_config)
         self.container.start()
 
-        print(f"SQL Server container '{self.container.id}' created and started successfully.")
+        print(
+            f"SQL Server container '{self.container.id}' created and started successfully."
+        )
 
     def get_connection_url(self):
         self.wait_until_container_ready()
@@ -62,15 +69,15 @@ class SQLServerContainer:
                 retries += 1
                 time.sleep(retry_delay)
                 print(f"Retrying connection (attempt {retries}/{max_retries})...")
-        
+
         raise RuntimeError("Unable to connect to the SQL Server container.")
-    
+
     def _generate_connection_string(self):
-        server = f'localhost,{self.port}'
+        server = f"localhost,{self.port}"
         return f"Driver={{ODBC Driver 17 for SQL Server}};Server={server};Database={self.database};UID={self.username};PWD={self.sa_password}"
 
     def wait_until_container_ready(self):
-        while self.container.status != 'running':
+        while self.container.status != "running":
             time.sleep(1)
             print("Waiting for Container to get ready.")
             self.container.reload()
@@ -88,4 +95,3 @@ class SQLServerContainer:
         self._cleanup()
 
     # def cleanup_handler(self, signum, frame):
-

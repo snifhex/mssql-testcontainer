@@ -40,8 +40,8 @@ from mssql_testcontainer import SQLServerContainer
 
 @pytest.fixture(scope="session")
 def session():
-    with SQLServerContainer() as container:
-        engine = create_engine(container.get_connection_url(), fast_executemany=True)
+    with SQLServerContainer() as mssql:
+        engine = create_engine(mssql.get_connection_url(), fast_executemany=True)
         YourModel.metadata.create_all(engine)
         Session = sessionmaker()
         Session.configure(bind=engine)

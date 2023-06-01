@@ -1,4 +1,5 @@
 # mssql-testcontainer
+[![Python package](https://github.com/snifhex/mssql-testcontainer/actions/workflows/python-package.yml/badge.svg)](https://github.com/snifhex/mssql-testcontainer/actions/workflows/python-package.yml)
 
 The `mssql-testcontainer` package provides a simple and convenient way to spin up a SQL Server container for testing purposes. It utilizes the docker library and PyODBC to create and manage the container, allowing you to connect to the SQL Server instance within your Python tests.
 

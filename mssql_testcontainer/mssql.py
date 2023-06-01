@@ -10,7 +10,7 @@ class SQLServerContainer:
         image="mcr.microsoft.com/mssql/server:2019-latest",
         port=1433,
         sa_password="YourPass@1",
-        database="temp_db",
+        database="tempdb",
         username="SA",
     ):
         self.image = image
@@ -53,9 +53,7 @@ class SQLServerContainer:
         )
 
     def get_connection_url(self):
-        self.wait_until_container_ready()
-        connection_string = self.get_connetction_string()
-        return f"mssql+pyodbc:///?odbc_connect={connection_string}"
+        return f"mssql+pyodbc:///?odbc_connect={self.get_connetction_string()}"
 
     def get_connetction_string(self, max_retries=10, retry_delay=0.5):
         self.wait_until_container_ready()
@@ -93,5 +91,3 @@ class SQLServerContainer:
 
     def close(self):
         self._cleanup()
-
-    # def cleanup_handler(self, signum, frame):

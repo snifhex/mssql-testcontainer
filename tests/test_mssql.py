@@ -11,7 +11,7 @@ class TestSQLServerContainer(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.mssql = SQLServerContainer(image = self.image, port = cls.port,
+        cls.mssql = SQLServerContainer(image = cls.image, port = cls.port,
                                         sa_password = cls.sa_password,
                                         database = cls.database,
                                         username = cls.username)

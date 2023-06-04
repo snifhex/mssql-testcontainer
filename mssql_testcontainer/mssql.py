@@ -19,6 +19,7 @@ class SQLServerContainer:
         self.container = None
         self.database = database
         self.username = username
+        self.client = docker.from_env()
         signal.signal(signal.SIGINT, self.close)
 
     def __enter__(self):
@@ -35,8 +36,22 @@ class SQLServerContainer:
             except:
                 pass
 
+    def image_exists(self):
+        try:
+            self.client.images.get(self.image)
+            return True
+        except docker.errors.ImageNotFound:
+            return False
+
+    def pull_image(self):
+        if not self.image_exists():
+            self.client.images.pull(self.image)
+            print(f"Image '{self.image}' pulled successfully.")
+        else:
+            print(f"Image '{self.image}' already exists.")            
+
     def _create_container(self):
-        client = docker.from_env()
+        self.pull_image()
 
         container_config = {
             "image": self.image,
@@ -45,7 +60,7 @@ class SQLServerContainer:
             "detach": True,
         }
 
-        self.container = client.containers.create(**container_config)
+        self.container = self.client.containers.create(**container_config)
         self.container.start()
 
         print(

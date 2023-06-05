@@ -70,7 +70,7 @@ class SQLServerContainer:
     def get_connection_url(self):
         return f"mssql+pyodbc:///?odbc_connect={self.get_connetction_string()}"
 
-    def get_connetction_string(self, max_retries=10, retry_delay=0.5):
+    def get_connetction_string(self, max_retries=10, retry_delay=1):
         self.wait_until_container_ready()
         connection_string = self._generate_connection_string()
         retries = 0
